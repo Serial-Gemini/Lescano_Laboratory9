@@ -1,0 +1,35 @@
+/* Make all code text glow */
+.monaco-editor .view-lines .mtk1,
+.monaco-editor .view-lines span {
+    text-shadow: 0 0 2px #3b1443, 0 0 8px #7ef0ff, 0 0 2px #ff7edb;
+}
+/* .monaco-editor .view-lines .mtk1,
+
+.monaco-editor .entity.name.function {
+  text-shadow: 0 0 2px #3b1443, 0 0 8px #fe4450, 0 0 2px #fe4450;
+}
+
+
+.monaco-editor .keyword {
+  text-shadow: 0 0 2px #3b1443, 0 0 8px #fede5d, 0 0 2px #fede5d;
+}
+
+
+.monaco-editor .string {
+  text-shadow: 0 0 2px #3b1443, 0 0 8px #ff7edb, 0 0 2px #ff7edb;
+}
+
+
+.monaco-editor .comment {
+  text-shadow: 0 0 2px #3b1443, 0 0 8px #36f9f6, 0 0 2px #36f9f6;
+}
+
+.monaco-editor .entity.name.type,
+.monaco-editor .support.class {
+  text-shadow: 0 0 2px #3b1443, 0 0 8px #36f9f6, 0 0 2px #36f9f6;
+}
+
+.monaco-editor .support.type.property-name,
+.monaco-editor .string.unquoted.label {
+  text-shadow: 0 0 2px #3b1443, 0 0 8px #fede5d, 0 0 2px #fede5d;
+} */
