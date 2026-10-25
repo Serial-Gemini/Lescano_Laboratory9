@@ -1,0 +1,320 @@
+The manual doesn't cover that storage redirection, and it assumes the Android SDK is in its default C: location. We'll correct that for your PC.
+Part 1 — Prepare your D: drive
+Step 1. Create the folders
+Open Command Prompt (cmd, not PowerShell) and paste this entire block:
+mkdir "D:\Android"
+mkdir "D:\Android\Sdk"
+mkdir "D:\Android\AVD"
+mkdir "D:\Android\UserHome"
+mkdir "D:\Android\.gradle"
+mkdir "D:\Android\npm-cache"
+mkdir "D:\Projects"
+
+
+These commands create the folders if they don't already exist. They won't delete existing contents.
+
+Don't create the Android Studio application folder manually. Let its installer create or use the installation directory.
+Step 2. Install Android Studio on D:
+Download it from the official Android Studio website.
+
+During installation:
+- Installation location: D:\Android\Android Studio
+- Start Menu folder: keep the default.
+- SDK location: we'll set this separately after opening Android Studio, if the installer doesn't offer it.
+Because you've already uninstalled Android Studio, you can perform a fresh installation. Don't download the large emulator system images until you've configured the SDK location in Part 2.
+Part 2 — Redirect Android's storage to D:
+This is the additional setup missing from your lab manual.
+Step 3. Set Windows environment variables
+Press Windows + S, search for Edit environment variables for your account, and open it.
+
+You can create the variables through the graphical window, or use the commands below in Command Prompt. Since you want everything in one go, the commands create the user variables for you.
+
+Copy and run this block:
+setx ANDROID_HOME "D:\Android\Sdk"
+setx ANDROID_USER_HOME "D:\Android\UserHome"
+setx ANDROID_AVD_HOME "D:\Android\AVD"
+setx GRADLE_USER_HOME "D:\Android\.gradle"
+
+
+What each variable does:
+Variable	Purpose
+ANDROID_HOME	Tells Expo and Android tools where the SDK lives.
+ANDROID_USER_HOME	Redirects Android SDK tool settings to D:.
+ANDROID_AVD_HOME	Redirects emulator virtual-device files to D:.
+GRADLE_USER_HOME	Redirects Gradle dependencies and caches to D:.
+
+Important: setx changes future processes, not terminals that are already open. Close Command Prompt and Android Studio, then reopen them after setting these variables.
+
+If ANDROID_SDK_ROOT already exists in your environment variables, change it to D:\Android\Sdk or remove it if no tool requires it. Don't create conflicting SDK paths.
+Step 4. Add the Android tools to Path
+In the same Environment Variables window:
+1. Select your user Path.
+2. Click Edit → New.
+3. Add this entry:
+%ANDROID_HOME%\platform-tools
+
+
+4. Click OK on all windows.
+
+This lets you run adb, the Android Debug Bridge, without typing its full path.
+Step 5. Redirect npm's cache
+Run:
+npm config set cache "D:\Android\npm-cache" --global
+
+
+Verify it:
+npm config get cache
+
+
+Expected output:
+D:\Android\npm-cache
+
+
+This redirects npm's download cache. npm's small configuration file may still be stored under your Windows user profile on C:.
+Step 6. Install Node.js and VS Code
+Your manual requires Node.js v22.13 or newer and Visual Studio Code. Laboratory 1 Getting Started with React Native (Expo + Tailwind) - Updated (1).pdf
+
+
+Install them from their official websites if you haven't already:
+- Node.js download
+- Visual Studio Code download
+If you want to install Node.js using Windows Package Manager, you can use:
+winget install --id OpenJS.NodeJS.LTS -e
+
+
+The package installs the current LTS release, which may be newer than the version specified in the manual. If Node.js is already installed and working, don't reinstall it unnecessarily.
+
+Verify the tools in a new Command Prompt:
+node -v
+npm -v
+npx -v
+code --version
+
+
+All four commands should print version information. If code isn't recognized, VS Code's command-line launcher may not be in your Path; you can still open projects from the VS Code application.
+Step 7. Verify your Android storage configuration
+Run this block in a new Command Prompt:
+echo %ANDROID_HOME%
+echo %ANDROID_USER_HOME%
+echo %ANDROID_AVD_HOME%
+echo %GRADLE_USER_HOME%
+echo.
+
+dir D:\Android
+
+
+The four paths should point to D:. Empty folders are normal at this stage.
+
+Next, launch Android Studio. Open More Actions → SDK Manager from the Welcome screen, or Tools → SDK Manager if you have a project open.
+
+Set Android SDK Location to:
+D:\Android\Sdk
+
+
+Apply the changes, then install the required SDK components. For your manual, create an Android Virtual Device using a recent system image, preferably API 34 or newer as specified by the lab. Laboratory 1 Getting Started with React Native (Expo + Tailwind) - Updated (1).pdf
+
+
+Once the SDK is installed, test the tools:
+"%ANDROID_HOME%\platform-tools\adb.exe" --version
+"%ANDROID_HOME%\platform-tools\adb.exe" devices
+
+
+The first command should display the ADB version. The second lists connected devices and running emulators.
+
+Do not delete anything from C: as part of this setup. First confirm the SDK and emulator work from D:.
+Part 3 — Create the exact React Native project from your lab
+The following commands follow your manual's SDK 57 project instructions, with the project created directly on D:. Laboratory 1 Getting Started with React Native (Expo + Tailwind) - Updated (1).pdf
+
+Step 8. Create the project
+Open a new Command Prompt and run these commands one at a time:
+cd /d D:\Projects
+npx create-expo-app@latest lab1-hello-rn --template blank@sdk-57
+cd /d D:\Projects\lab1-hello-rn
+code .
+
+
+What these commands do:
+- cd /d D:\Projects switches to your D: project directory.
+- npx create-expo-app@latest ... creates the Expo project using the template specified by your manual.
+- cd /d D:\Projects\lab1-hello-rn enters the project folder.
+- code . opens the current folder in VS Code.
+If the template is no longer available or Expo rejects SDK 57, stop rather than silently creating a project with a different SDK. We can then adjust the setup to the version your instructor requires.
+Step 9. Start the project before changing anything
+Make sure your Android emulator is running and has reached its home screen.
+
+In the project directory, run:
+npx expo start
+
+
+When Expo starts, press:
+a
+
+
+in the terminal to open the app in the Android emulator.
+
+The first launch may take a few minutes. Expo installs its Expo Go viewer inside the emulator automatically.
+
+Once the default app appears, stop the development server using Ctrl + C in the terminal.
+Step 10. Install NativeWind and Tailwind
+Your manual specifies NativeWind 4.2.7 and Tailwind CSS 3.4. Laboratory 1 Getting Started with React Native (Expo + Tailwind) - Updated (1).pdf
+
+
+Run these commands inside D:\Projects\lab1-hello-rn, one at a time:
+npm install nativewind@4.2.7
+
+
+npm install --save-dev tailwindcss@^3.4.17 prettier-plugin-tailwindcss@^0.5.11 babel-preset-expo
+
+
+npx expo install react-native-reanimated react-native-worklets react-native-safe-area-context
+
+
+npx expo install --check
+
+
+If Expo reports that packages need to be adjusted to match the project's SDK, review and accept its proposed compatible fixes.
+
+Don't run npm audit fix --force; the manual warns that this can upgrade dependencies incompatibly.
+Step 11. Create the remaining configuration files
+These are file contents, not terminal commands. In VS Code, create or edit the following files in the project root, alongside App.js and package.json.
+tailwind.config.js
+Replace the file's contents with:
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    './App.{js,jsx,ts,tsx}',
+    './components/**/*.{js,jsx,ts,tsx}',
+  ],
+  presets: [require('nativewind/preset')],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+};
+
+
+global.css
+Create this file in the project root:
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+babel.config.js
+Replace its contents with:
+module.exports = function (api) {
+  api.cache(true);
+
+  return {
+    presets: [
+      ['babel-preset-expo', { jsxImportSource: 'nativewind' }],
+      'nativewind/babel',
+    ],
+  };
+};
+
+
+metro.config.js
+Create this file in the project root:
+const { getDefaultConfig } = require('expo/metro-config');
+const { withNativeWind } = require('nativewind/metro');
+
+const config = getDefaultConfig(__dirname);
+
+module.exports = withNativeWind(config, {
+  input: './global.css',
+});
+
+
+These are the NativeWind v4 configuration steps from your manual. Laboratory 1 Getting Started with React Native (Expo + Tailwind) - Updated (1).pdf
+
+app.json
+Open the existing app.json. Inside its top-level expo object, make sure it contains this web setting:
+"web": {
+  "bundler": "metro"
+}
+
+
+Don't replace your entire app.json with that snippet. Merge the web setting into the existing configuration, preserving its other fields.
+Step 12. Test Tailwind
+Replace the contents of App.js with:
+import './global.css';
+import { View, Text } from 'react-native';
+
+export default function App() {
+  return (
+    <View className="flex-1 items-center justify-center bg-indigo-600">
+      <Text className="text-4xl font-bold text-white">
+        Hello, Tailwind!
+      </Text>
+    </View>
+  );
+}
+
+
+Then run:
+npx expo start -c
+
+
+Press a when prompted by the running Expo terminal if the emulator doesn't open automatically.
+
+You should see bold white text against an indigo background. If the screen is plain white with small black text, check the configuration files and the global.css import.
+Part 4 — Complete the actual lab screen
+The remaining parts of your manual are primarily coding tasks, not terminal commands. You still need to create these two files and assemble them in App.js. Laboratory 1 Getting Started with React Native (Expo + Tailwind) - Updated (1).pdf
+
+
+Your project should ultimately look like this:
+D:\Projects\lab1-hello-rn
+
+ App.js — assembles the screen
+
+ app.json — Expo settings
+
+ babel.config.js — JavaScript transformation
+
+ metro.config.js — Metro and NativeWind integration
+
+ tailwind.config.js — Tailwind file scanning
+
+ global.css — Tailwind directives
+
+ package.json — dependencies and scripts
+
+ assets/ — images and icons
+
+ components/
+
+TopBar.js — top navigation
+
+NavBar.js — bottom navigation
+
+ node_modules/ — installed packages; don't edit or submit it
+
+
+
+The manual also requires seven customizations: your own app title, a different theme color, a personal description, a third button, a fourth bottom-navigation item, centered text, and a different selected navigation item. The buttons and navigation remain nonfunctional in this lab; don't add onPress handlers yet.
+Part 5 — Final verification commands
+After the configuration and lab screen are complete, open a new Command Prompt and run:
+echo ==== ANDROID LOCATIONS ====
+echo %ANDROID_HOME%
+echo %ANDROID_USER_HOME%
+echo %ANDROID_AVD_HOME%
+echo %GRADLE_USER_HOME%
+
+echo ==== NODE AND NPM ====
+node -v
+npm -v
+npx -v
+
+echo ==== ANDROID SDK ====
+"%ANDROID_HOME%\platform-tools\adb.exe" --version
+"%ANDROID_HOME%\platform-tools\adb.exe" devices
+
+echo ==== PROJECT ====
+cd /d D:\Projects\lab1-hello-rn
+npx expo install --check
+
+
+Once the checks pass, launch your lab:
+cd /d D:\Projects\lab1-hello-rn
+npx expo start -c

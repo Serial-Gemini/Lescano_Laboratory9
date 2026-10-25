@@ -1,0 +1,1429 @@
+3. Part A — Set up your development environment
+The PDF estimates two to three hours for the laboratory. Laboratory 1 Getting Started with React Native (Expo + Tailwind) - Updated (1).pdf
+
+
+Since you're using Windows 10 and have previously preferred putting development files on your D: drive, you can keep the project there to avoid unnecessarily filling your C: drive. 
+Step A1. Install Android Studio
+1. Open the official Android Studio website.
+2. Download and install Android Studio.
+3. Choose the Standard installation.
+4. Open Android Studio and let it download the Android SDK and required components.
+5. Find the SDK location in Android Studio's Settings under Languages & Frameworks → Android SDK.
+The Android SDK contains the tools and platform files needed to run and develop Android applications. You need it even though you will initially write JavaScript rather than Java or Kotlin.
+
+The usual Windows SDK path is:
+C:\Users\<your-name>\AppData\Local\Android\Sdk
+
+
+Replace <your-name> with your Windows account folder name. Do not type the angle brackets literally.
+Step A2. Configure the Android environment variables
+Windows needs to know where Android's command-line tools are located.
+1. Press the Windows key.
+2. Search for Edit environment variables for your account.
+3. Open it.
+4. Under User variables, click New.
+5. Enter these values:
+Field	Value
+Variable name	ANDROID_HOME
+Variable value	Your actual Android SDK path
+
+6. Find the Path variable under User variables and click Edit.
+7. Add a new entry:
+%ANDROID_HOME%\platform-tools
+
+
+8. Save your changes and close your terminal windows. Open a new Command Prompt or PowerShell window.
+
+Now run:
+adb --version
+
+
+What does this command do?
+- adb stands for Android Debug Bridge.
+- It is a command-line tool used to communicate with Android devices and emulators.
+- --version asks it to print its installed version.
+Expected result: version information appears. If Windows says that adb is not recognized, recheck the SDK path and Path entry.
+Step A3. Create an Android emulator
+1. Open Android Studio.
+2. Go to Device Manager.
+3. Click Create Device.
+4. Choose a phone, such as a Pixel device.
+5. Select an Android system image with API 34 or newer, as specified in the PDF.
+6. Download the image if needed.
+7. Finish creating the device.
+8. Click its Play button and wait for the Android home screen.
+An emulator is effectively a virtual Android phone. You will use it to view your application without needing to scan a QR code with a physical phone.
+
+If it will not start, check that CPU virtualization is enabled in your BIOS. The lab also recommends enabling Windows Hypervisor Platform if required.
+Step A4. Optional: Use your physical phone
+You can skip this step because the lab uses an emulator.
+
+If you want to use a phone instead, install Expo Go from the official app store, connect the phone and computer to the same Wi-Fi network, and scan the QR code that Expo displays later.
+
+The PDF warns that its Expo SDK 57 project may not work with the newer Expo Go version targeting SDK 58. The emulator is therefore the safer choice for following this particular lab. Laboratory 1 Getting Started with React Native (Expo + Tailwind) - Updated (1).pdf
+
+4. Part B — Create your React Native project
+Step B1. Open a terminal and create the project
+First, make a folder for your school projects if you don't already have one.
+
+For example, you can use:
+D:\Projects
+
+
+Open Command Prompt or the VS Code terminal and run:
+cd /d D:\Projects
+
+
+This command changes your working directory to D:\Projects. The /d option lets Command Prompt switch drives as well as folders.
+
+Next, run the exact project-generation command from your laboratory:
+npx create-expo-app@latest lab1-hello-rn --template blank@sdk-57
+
+
+Let's break it down.
+Part	Meaning
+npx	Runs a package command without requiring you to install that command globally first.
+create-expo-app@latest	Uses the latest available version of the Expo project-creation tool.
+lab1-hello-rn	The name of your new project folder.
+--template	Specifies which starter template to use.
+blank@sdk-57	Requests the blank template associated with Expo SDK 57.
+
+The blank template gives you a simple starting point instead of a prebuilt multi-screen application.
+
+If the command asks you to choose an SDK version, select SDK 57 as directed by the PDF.
+
+Before continuing, verify that Node.js is installed:
+node -v
+npm -v
+
+
+The lab specifies Node.js v22.13 or newer, using a Current LTS version. node -v prints the Node.js version, while npm -v prints the npm package manager version.
+
+If either command is not recognized, close and reopen the terminal first. If it still fails, check your Node.js installation and PATH configuration.
+Step B2. Enter the project and open VS Code
+Run:
+cd lab1-hello-rn
+code .
+
+
+What these commands mean:
+- cd lab1-hello-rn enters the newly created project directory.
+- code . opens the current directory in Visual Studio Code. The dot means "this folder."
+If code is not recognized, open VS Code manually and choose File → Open Folder, then select the lab1-hello-rn folder.
+Step B3. Understand your project's files
+Your project will contain several files and folders. The exact structure may vary slightly depending on the template.
+App.js
+
+The main application component. This is where you will assemble the screen and import your own components.
+
+
+
+app.json
+
+Expo configuration, such as the project name, icon, platform settings, and web bundler.
+
+
+
+package.json
+
+The project's dependency list, metadata, and runnable scripts.
+
+
+
+assets/
+
+Images, icons, and other static resources.
+
+
+
+node_modules/
+
+Installed packages and their dependencies. Do not manually edit this folder or submit it as part of the lab.
+
+
+
+If your starter project has App.tsx instead of App.js, use the TypeScript file in place of App.js throughout the laboratory. Don't create two competing main app files.
+Step B4. Start the app for the first time
+Make sure your emulator is already running. In the VS Code terminal, run:
+npx expo start
+
+
+Expo starts its development server, and Metro prepares your JavaScript code for the application.
+
+When the terminal displays its keyboard shortcuts, press:
+a
+
+
+The a shortcut opens the project on the Android emulator. The first launch may take several minutes because Expo needs to set up its viewer app.
+
+You should see the default screen containing a message about opening App.js.
+
+To stop the development server later, press Ctrl + C in that terminal.
+5. Part C — Build your first Hello World app
+Now you will replace the starter screen with a simple React Native interface.
+File: App.js
+Open App.js, delete its existing contents, and use this complete code:
+
+import { View, Text } from 'react-native';
+
+export default function App() {
+  return (
+    <View
+      style={{
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <Text>Hello, World!</Text>
+    </View>
+  );
+}
+
+
+
+Save the file. The emulator should update automatically through Fast Refresh.
+Understand every line
+Line 1 — Import the components
+import { View, Text } from 'react-native';
+
+
+- import makes code from another module available in this file.
+- { View, Text } selects two named exports from the React Native package.
+- View is a container that holds and arranges other components.
+- Text displays text.
+- 'react-native' identifies the package providing them.
+The curly braces here mean that you are importing named exports. They are not the same as the curly braces you will use for JavaScript expressions inside JSX.
+
+Line 3 — Define the app component
+export default function App() {
+
+
+- function App() defines a JavaScript function named App.
+- In React, this function is a component because it returns JSX describing the interface.
+- export default makes this the file's primary export so the application entry point can load it.
+Line 4 — Begin returning the interface
+return (
+
+
+The return statement tells the function what to produce. The parentheses allow the JSX to span several lines and make the layout easier to read.
+
+Lines 5–12 — Create and style the container
+<View
+  style={{
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  }}
+>
+
+
+- View creates the container.
+- style accepts a JavaScript object of React Native style properties.
+- The first pair of braces opens the JSX expression.
+- The second pair creates the JavaScript object.
+Now the three important style properties:
+Property	Explanation
+flex: 1	Allows the container to occupy available space in its parent.
+alignItems: 'center'	Centers children across the cross-axis. With the default column layout, this is horizontal centering.
+justifyContent: 'center'	Centers children along the main axis. With the default column layout, this is vertical centering.
+
+Together, these settings center the greeting in the available screen area.
+
+Line 13 — Display the greeting
+<Text>Hello, World!</Text>
+
+
+The Text component renders the words on the screen. The text is placed between its opening and closing tags.
+
+Lines 14–17 — Close the components and function
+</View>
+);
+}
+
+
+- </View> closes the container.
+- ); finishes the returned JSX expression.
+- } closes the App function.
+The opening and closing tags must match. If you forget one, you may get a syntax error.
+Why can't you write the text directly inside View?
+This will cause an error in React Native:
+<View>Hello, World!</View>
+
+
+The reason is that React Native requires text content to be rendered inside a Text component. Use this instead:
+<View>
+  <Text>Hello, World!</Text>
+</View>
+
+
+This is one of the most important differences between React Native and ordinary HTML.
+Checkpoint
+Before proceeding, make sure:
+- [x] The emulator displays Hello, World!.
+- [x] The greeting appears centered.
+- [x] The terminal has no red build error.
+- [x] You understand why View and Text are imported.
+6. Part D — Install and configure Tailwind with NativeWind
+In Part C, you styled the screen using JavaScript style properties. Now you'll use Tailwind classes instead.
+
+For example, instead of writing:
+<View style={{ flex: 1, backgroundColor: '#4f46e5' }}>
+
+
+you'll be able to write:
+<View className="flex-1 bg-indigo-600">
+
+
+The second version is shorter, and each class describes a specific styling rule.
+
+Important: Follow the PDF's version combination. It specifies NativeWind 4.2.7 and Tailwind CSS 3.4. Do not substitute NativeWind v5 into this configuration. Laboratory 1 Getting Started with React Native (Expo + Tailwind) - Updated (1).pdf
+
+Step D1. Stop the server and install the packages
+If Expo is running, focus its terminal and press Ctrl + C.
+
+Run the following commands one at a time, from inside the lab1-hello-rn folder.
+
+First:
+npm install nativewind@4.2.7
+
+
+This installs NativeWind at the specified version.
+
+Second:
+npm install --save-dev tailwindcss@^3.4.17 prettier-plugin-tailwindcss@^0.5.11 babel-preset-expo
+
+
+This installs development dependencies:
+- tailwindcss@^3.4.17: the Tailwind CSS v3 toolchain.
+- prettier-plugin-tailwindcss@^0.5.11: a Prettier plugin that can sort Tailwind classes when formatting code.
+- babel-preset-expo: the Babel preset used for Expo's JavaScript transformation.
+The --save-dev flag records these packages as development dependencies in package.json.
+
+Third:
+npx expo install react-native-reanimated react-native-worklets react-native-safe-area-context
+
+
+Why use npx expo install here instead of npm install? Expo can select compatible versions of packages that integrate with your particular Expo SDK. These libraries provide animation-related functionality and safe-area components that you will need for the project configuration and layout.
+
+Fourth:
+npx expo install --check
+
+
+This checks whether installed packages match the versions expected by the Expo SDK. Follow any fixes it offers that are appropriate for this project.
+
+Do not run npm audit fix --force just because npm reports vulnerabilities. The laboratory specifically warns that forcing dependency upgrades can break this version-sensitive setup.
+Step D2. Create tailwind.config.js
+Run:
+npx tailwindcss init
+
+
+This generates the Tailwind configuration file.
+
+File: tailwind.config.js
+
+Replace its contents with:
+
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: ['./App.{js,jsx,ts,tsx}', './components/**/*.{js,jsx,ts,tsx}'],
+  presets: [require('nativewind/preset')],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+};
+
+
+
+Let's explain every section.
+
+/** @type {import('tailwindcss').Config} */
+
+This is a JSDoc type annotation. It helps editors understand that the exported object is intended to be a Tailwind configuration. It is not required JavaScript logic at runtime.
+
+module.exports = { ... }
+
+This exports the configuration using CommonJS syntax so Tailwind can load it.
+
+content: [...]
+content: ['./App.{js,jsx,ts,tsx}', './components/**/*.{js,jsx,ts,tsx}'],
+
+
+This tells Tailwind which files to scan for utility classes.
+- ./App... covers your main app file.
+- ./components/... covers JavaScript and TypeScript files inside the components directory.
+- * matches names at a particular level.
+- **/* covers files in nested directories as well.
+- {js,jsx,ts,tsx} matches the listed file extensions.
+Why does this matter? If Tailwind does not scan a file, it may not generate the styles used by the classes in that file.
+
+presets
+presets: [require('nativewind/preset')],
+
+
+This loads NativeWind's Tailwind preset, which supplies the configuration needed for NativeWind's React Native styling.
+
+theme
+theme: {
+  extend: {},
+},
+
+
+This is where you can extend Tailwind's default design system with custom colors, spacing values, fonts, and other theme settings. For this lab, it remains empty.
+
+plugins
+plugins: [],
+
+
+This is an array for additional Tailwind plugins. No additional plugins are needed here.
+Step D3. Create global.css
+In VS Code, right-click the project root and select New File. Name it:
+global.css
+
+
+Make sure it is beside App.js, not inside components.
+
+File: global.css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+These three directives tell Tailwind to include its base styles, component-layer styles, and utility classes in the generated stylesheet.
+
+NativeWind needs this stylesheet to connect your Tailwind configuration to the styling system. Later, you'll import this file once in App.js.
+Step D4. Create babel.config.js
+Create another file in the project root named babel.config.js.
+
+File: babel.config.js
+
+module.exports = function (api) {
+  api.cache(true);
+
+  return {
+    presets: [
+      ['babel-preset-expo', { jsxImportSource: 'nativewind' }],
+      'nativewind/babel',
+    ],
+  };
+};
+
+
+
+Explanation:
+- module.exports = function (api) exports a function that Babel uses to obtain its configuration.
+- api.cache(true) tells Babel it can cache this configuration rather than repeatedly recalculating it.
+- return provides the configuration object.
+- presets lists the transformations Babel should use.
+- babel-preset-expo supplies Expo's Babel configuration.
+- { jsxImportSource: 'nativewind' } configures the JSX runtime source for NativeWind.
+- 'nativewind/babel' adds NativeWind's Babel integration.
+Babel transforms your JavaScript and JSX into code the application can execute. This configuration is important because the app must understand your JSX and NativeWind styling.
+Step D5. Create metro.config.js
+Create a file named metro.config.js in the project root.
+
+File: metro.config.js
+
+const { getDefaultConfig } = require('expo/metro-config');
+const { withNativeWind } = require('nativewind/metro');
+
+const config = getDefaultConfig(__dirname);
+
+module.exports = withNativeWind(config, {
+  input: './global.css',
+});
+
+
+
+Explanation:
+
+getDefaultConfig imports Expo's default Metro configuration generator.
+
+withNativeWind imports a helper that integrates NativeWind into Metro.
+const config = getDefaultConfig(__dirname);
+
+
+- const declares a variable that cannot be reassigned.
+- __dirname represents the directory containing this configuration file.
+- The statement creates the default Metro configuration for your project.
+module.exports = withNativeWind(config, {
+  input: './global.css',
+});
+
+
+This exports the Metro configuration after adding NativeWind's integration. The input property identifies the CSS file that NativeWind should process.
+
+The three configuration files have different jobs:
+File	Main responsibility
+tailwind.config.js	Which files to scan and which Tailwind preset to use.
+babel.config.js	How JavaScript and JSX are transformed for NativeWind.
+metro.config.js	How Metro integrates and processes NativeWind and the CSS input.
+
+Do not confuse these files or paste all three configurations into a single file.
+Step D6. Update app.json
+Open app.json. The lab requires the Expo web configuration to contain:
+{
+  "expo": {
+    "web": {
+      "bundler": "metro"
+    }
+  }
+}
+
+
+This is an example of the relevant structure, not necessarily the complete contents of your file.
+
+Do not replace your entire app.json with that small example if it already contains other settings. Keep the existing properties and add the missing web.bundler setting.
+
+The bundler value tells Expo to use Metro for the web preview.
+Step D7. Test Tailwind
+File: App.js
+
+Replace the Hello World code from Part C with:
+
+import './global.css';
+import { View, Text } from 'react-native';
+
+export default function App() {
+  return (
+    <View className="flex-1 items-center justify-center bg-indigo-600">
+      <Text className="text-4xl font-bold text-white">
+        Hello, Tailwind!
+      </Text>
+    </View>
+  );
+}
+
+
+
+Explanation of the new classes:
+Class	What it does
+flex-1	Lets the container fill available space.
+items-center	Centers children horizontally in this column layout.
+justify-center	Centers children vertically.
+bg-indigo-600	Gives the container an indigo background.
+text-4xl	Makes the text large.
+font-bold	Makes the text bold.
+text-white	Makes the text white.
+
+Notice that className is now used instead of style. This is the styling approach the lab is teaching.
+
+The first line is especially important:
+import './global.css';
+
+
+It loads the global stylesheet into the app. Without the correct NativeWind setup and this import, your Tailwind classes may not work.
+
+Start Expo with a cleared cache:
+npx expo start -c
+
+
+The -c option clears Metro's cache. This is useful after configuration changes because Metro may otherwise reuse cached information from before the setup was updated.
+
+You should see bold white text on an indigo background.
+
+If the screen is still white with small black text, check the troubleshooting section later in this guide.
+7. Part E — Build the actual mobile app
+This is the main part of the laboratory. You will stop putting the entire interface into App.js and split it into reusable components.
+Step E1. Create the folder structure
+In VS Code, create a folder named components beside App.js.
+
+Inside it, create these two files:
+- components/TopBar.js
+- components/NavBar.js
+Your project should now look roughly like this:
+lab1-hello-rn/
+
+App.js
+
+Main screen; assembles the components.
+
+
+app.json
+
+Expo settings.
+
+
+babel.config.js
+
+JavaScript transformation settings.
+
+
+metro.config.js
+
+Metro and NativeWind integration.
+
+
+tailwind.config.js
+
+Tailwind configuration and file scanning.
+
+
+global.css
+
+Tailwind stylesheet entry point.
+
+
+components/
+
+TopBar.js
+
+Reusable top navigation bar.
+
+
+NavBar.js
+
+Reusable bottom navigation bar.
+
+
+
+
+
+The exact contents of node_modules and assets are omitted from this illustration.
+Step E2. Understand imports and exports
+Before writing the two component files, understand this rule:
+
+Every file must import the components it uses. Importing View into App.js does not automatically make View available inside TopBar.js.
+
+Here are the main imports you'll use:
+Component	Package or file
+View	react-native
+Text	react-native
+Pressable	react-native
+ScrollView	react-native
+SafeAreaProvider	react-native-safe-area-context
+SafeAreaView	react-native-safe-area-context
+TopBar	./components/TopBar
+NavBar	./components/NavBar
+
+For React Native components, use named imports:
+import { View, Text } from 'react-native';
+
+
+For your own components, use the default import syntax if the component is exported as the default:
+import TopBar from './components/TopBar';
+
+
+The path begins with ./ because components is a folder inside the current project directory.
+Step E3. Build the top navigation bar
+Open components/TopBar.js.
+
+File: components/TopBar.js
+
+import { View, Text } from 'react-native';
+
+export default function TopBar() {
+  return (
+    <View className="flex-row items-center justify-between bg-indigo-600 px-4 py-4">
+      <Text className="text-xl font-bold text-white">
+        My First App
+      </Text>
+
+      <Text className="text-2xl text-white">
+        ☰
+      </Text>
+    </View>
+  );
+}
+
+
+
+Let's break this down.
+
+Import
+import { View, Text } from 'react-native';
+
+
+This file uses a View to create the bar and Text to display the title and menu symbol. It does not need to import Pressable because the menu is decorative in this lab.
+
+Function and export
+export default function TopBar() {
+
+
+This defines a reusable component called TopBar and exports it so App.js can import it.
+
+Outer container
+<View className="flex-row items-center justify-between bg-indigo-600 px-4 py-4">
+
+
+- flex-row: lays out the children horizontally.
+- items-center: aligns them vertically in the center.
+- justify-between: pushes the first child toward the left and the second toward the right.
+- bg-indigo-600: gives the bar an indigo background.
+- px-4: adds horizontal padding.
+- py-4: adds vertical padding.
+Padding is the space inside a component, between its content and its edges.
+
+App title
+<Text className="text-xl font-bold text-white">
+  My First App
+</Text>
+
+
+text-xl makes the title larger than ordinary body text, font-bold makes it bold, and text-white makes it white.
+
+Menu symbol
+<Text className="text-2xl text-white">
+  ☰
+</Text>
+
+
+The ☰ symbol is a simple text character that looks like a hamburger menu icon. It does not open a menu because this lab does not add interaction.
+Step E4. Build the bottom navigation bar
+Open components/NavBar.js.
+
+File: components/NavBar.js
+
+import { View, Text, Pressable } from 'react-native';
+
+export default function NavBar() {
+  return (
+    <View className="flex-row border-t border-slate-200 bg-white">
+      <Pressable className="flex-1 items-center py-2">
+        <Text className="text-lg">🏠</Text>
+        <Text className="text-sm font-bold text-indigo-600">
+          Home
+        </Text>
+      </Pressable>
+
+      <Pressable className="flex-1 items-center py-2">
+        <Text className="text-lg">🔍</Text>
+        <Text className="text-sm text-slate-500">
+          Search
+        </Text>
+      </Pressable>
+
+      <Pressable className="flex-1 items-center py-2">
+        <Text className="text-lg">👤</Text>
+        <Text className="text-sm text-slate-500">
+          Profile
+        </Text>
+      </Pressable>
+    </View>
+  );
+}
+
+
+
+Understanding the bottom bar
+The import statement
+import { View, Text, Pressable } from 'react-native';
+
+
+This file uses three components:
+- View creates the overall navigation container.
+- Text displays icons and labels.
+- Pressable creates a container designed to respond to presses. You are using it for appearance only, without adding a handler.
+The outer navigation container
+<View className="flex-row border-t border-slate-200 bg-white">
+
+
+- flex-row puts the three navigation items side by side.
+- border-t adds a border to the top.
+- border-slate-200 gives the border a light slate color.
+- bg-white sets the background to white.
+Each navigation item
+<Pressable className="flex-1 items-center py-2">
+
+
+- flex-1 lets each item share the available width equally.
+- items-center centers the item’s contents horizontally.
+- py-2 adds vertical padding.
+Each Pressable contains two Text components: an emoji icon and a label. They appear stacked because the default layout direction of a View is a column.
+
+The selected item
+<Text className="text-sm font-bold text-indigo-600">
+  Home
+</Text>
+
+
+Home appears selected because its label is bold and indigo. The other labels use text-slate-500, so they appear gray.
+
+This is only a visual selection. No actual screen switching takes place.
+Step E5. Assemble everything in App.js
+Now open the root App.js and replace the Tailwind test screen from Part D.
+
+File: App.js
+
+import './global.css';
+
+import {
+  Text,
+  Pressable,
+  ScrollView,
+} from 'react-native';
+
+import {
+  SafeAreaProvider,
+  SafeAreaView,
+} from 'react-native-safe-area-context';
+
+import TopBar from './components/TopBar';
+import NavBar from './components/NavBar';
+
+export default function App() {
+  return (
+    <SafeAreaProvider>
+      <SafeAreaView className="flex-1 bg-slate-50">
+        <TopBar />
+
+        <ScrollView
+          className="flex-1"
+          contentContainerClassName="p-4"
+        >
+          <Text className="text-3xl font-bold text-slate-800">
+            Hello, World!
+          </Text>
+
+          <Text className="mt-2 text-base text-slate-600">
+            Welcome to React Native. This is my first mobile
+            application built with Expo and NativeWind.
+          </Text>
+
+          <Pressable className="mt-6 items-center rounded-xl bg-indigo-600 py-3">
+            <Text className="font-bold text-white">
+              Get Started
+            </Text>
+          </Pressable>
+
+          <Pressable className="mt-3 items-center rounded-xl border border-indigo-600 py-3">
+            <Text className="font-bold text-indigo-600">
+              Learn More
+            </Text>
+          </Pressable>
+        </ScrollView>
+
+        <NavBar />
+      </SafeAreaView>
+    </SafeAreaProvider>
+  );
+}
+
+
+
+This is the main file, so let's explain its structure carefully.
+1. Import the global stylesheet
+import './global.css';
+
+
+This loads the CSS entry point for NativeWind. Keep it in App.js only, as directed by the lab.
+2. Import React Native components
+import {
+  Text,
+  Pressable,
+  ScrollView,
+} from 'react-native';
+
+
+- Text displays the heading, paragraph, and button labels.
+- Pressable creates the two buttons.
+- ScrollView makes the central content scrollable if it becomes taller than the available screen.
+App.js doesn't directly use View, so it doesn't need to import it.
+3. Import the safe-area components
+import {
+  SafeAreaProvider,
+  SafeAreaView,
+} from 'react-native-safe-area-context';
+
+
+SafeAreaProvider provides the safe-area context used by safe-area-aware components.
+
+SafeAreaView helps keep the content within the usable screen area, away from areas such as the status bar and camera notch.
+
+The laboratory asks you to use both to create the outer layout.
+4. Import your own components
+import TopBar from './components/TopBar';
+import NavBar from './components/NavBar';
+
+
+These imports connect the two component files you just created to the main application.
+
+The component files export their functions, and App.js imports those functions. This is how you reuse components without copying their markup into App.js.
+5. Define the app and safe-area layout
+<SafeAreaProvider>
+  <SafeAreaView className="flex-1 bg-slate-50">
+
+
+The provider wraps the application content, and the safe-area view creates the main screen container.
+- flex-1 lets the container fill the available screen space.
+- bg-slate-50 gives the screen a very light gray background.
+The provider itself is not a visible bar. It supplies context for the components that need it.
+6. Add the top bar
+<TopBar />
+
+
+This renders the component from components/TopBar.js.
+
+The self-closing syntax is appropriate because TopBar already contains its own content.
+7. Add the scrollable main content
+<ScrollView
+  className="flex-1"
+  contentContainerClassName="p-4"
+>
+
+
+The ScrollView occupies the remaining available space between the top and bottom bars.
+- className="flex-1" allows the scroll view to expand.
+- contentContainerClassName="p-4" adds padding to the inner content container.
+The distinction matters: the ScrollView is the scrolling viewport, whereas its content container holds the heading, paragraph, and buttons.
+
+Because the top and bottom bars are siblings of the scroll view, the bottom bar remains below the scrollable content rather than becoming part of that scrolling content.
+8. Create the heading
+<Text className="text-3xl font-bold text-slate-800">
+  Hello, World!
+</Text>
+
+
+- text-3xl: large text.
+- font-bold: bold weight.
+- text-slate-800: dark slate text color.
+9. Create the paragraph
+<Text className="mt-2 text-base text-slate-600">
+  Welcome to React Native. This is my first mobile
+  application built with Expo and NativeWind.
+</Text>
+
+
+- mt-2 adds a top margin to separate the paragraph from the heading.
+- text-base sets ordinary body-text sizing.
+- text-slate-600 gives the paragraph a softer gray color.
+A margin creates space outside a component. Unlike padding, it doesn't enlarge the space inside the component's border.
+10. Create the primary button
+<Pressable className="mt-6 items-center rounded-xl bg-indigo-600 py-3">
+  <Text className="font-bold text-white">
+    Get Started
+  </Text>
+</Pressable>
+
+
+This is the filled primary button.
+- mt-6: spacing above the button.
+- items-center: centers the label horizontally.
+- rounded-xl: rounded corners.
+- bg-indigo-600: indigo background.
+- py-3: vertical padding.
+- font-bold text-white: bold, white button text.
+Notice that Get Started is inside a Text component. You must not place the plain string directly inside Pressable.
+11. Create the secondary button
+<Pressable className="mt-3 items-center rounded-xl border border-indigo-600 py-3">
+  <Text className="font-bold text-indigo-600">
+    Learn More
+  </Text>
+</Pressable>
+
+
+This button uses an outline instead of a filled background.
+- border adds a border.
+- border-indigo-600 sets its color.
+- The text is indigo to match the outline.
+- There is no bg-indigo-600 class, so it keeps the light background of the content area.
+12. Add the bottom bar
+<NavBar />
+
+
+This renders the bottom navigation component from components/NavBar.js.
+13. Close the components
+      </SafeAreaView>
+    </SafeAreaProvider>
+
+
+Every opening component tag needs a corresponding closing tag. The nesting determines which elements belong inside which containers.
+The component relationship, simplified
+App.js
+
+Main application and layout
+
+TopBar.js
+
+Title + menu symbol
+
+Main content in App.js
+
+Heading + paragraph + buttons
+
+NavBar.js
+
+Home + Search + Profile
+
+
+
+The main idea is that App.js controls the overall structure, while the two component files contain reusable pieces of the interface.
+Step E6. Run and inspect your app
+Save all three JavaScript files.
+
+If the Expo server is already running, Fast Refresh may update the app automatically. If you have stopped it, run:
+npx expo start -c
+
+
+Then press a if needed to open the Android emulator.
+
+Check that:
+- The indigo top bar contains the title and menu symbol.
+- The heading and paragraph appear below it.
+- Both buttons have the correct appearance.
+- The bottom navigation bar displays Home, Search, and Profile.
+- The bottom bar stays below the scrollable content.
+Do not add onPress yet. The lab explicitly expects the buttons and navigation items to be nonfunctional at this stage. Laboratory 1 Getting Started with React Native (Expo + Tailwind) - Updated (1).pdf
+
+8. Part F — Complete all seven customization tasks
+This section is worth 20 points in the grading rubric. You should complete all seven tasks rather than stopping after the default screen. Laboratory 1 Getting Started with React Native (Expo + Tailwind) - Updated (1).pdf
+
+
+We'll customize the example app with a new title, a sky-blue theme, a personal description, a Delete button, a Settings navigation item, centered text, and a different selected navigation item.
+
+You can change the personal information and app name to suit your own submission.
+Task 1. Change the app title
+File: components/TopBar.js
+
+Find this text:
+My First App
+
+
+Replace it with your preferred application name, for example:
+Gemini Space
+
+
+The title is inside a Text component. You only need to change the words; the existing styling remains intact.
+Task 2. Change the top bar and primary button color
+Let's change the indigo theme to sky blue.
+
+File: components/TopBar.js
+
+Change:
+<View className="flex-row items-center justify-between bg-indigo-600 px-4 py-4">
+
+
+to:
+<View className="flex-row items-center justify-between bg-sky-600 px-4 py-4">
+
+
+File: App.js
+
+Change the primary button's background:
+<Pressable className="mt-6 items-center rounded-xl bg-sky-600 py-3">
+
+
+Also change the secondary button's border and text colors to sky-600 so the theme is consistent:
+<Pressable className="mt-3 items-center rounded-xl border border-sky-600 py-3">
+  <Text className="font-bold text-sky-600">
+    Learn More
+  </Text>
+</Pressable>
+
+
+The sky-600 utility refers to a predefined Tailwind shade. You don't need to supply a hexadecimal color code.
+Task 3. Replace the paragraph with a description about yourself
+File: App.js
+
+Find the paragraph beginning with:
+Welcome to React Native.
+
+
+Replace it with your own name, course, and one hobby. For example, use this pattern:
+<Text className="mt-2 text-base text-slate-600 text-center">
+  Hi! I'm [Your Name], a [Your Course] student.
+  I enjoy [Your Hobby] in my free time.
+</Text>
+
+
+Replace the bracketed placeholders with your actual details before submitting.
+
+This also includes text-center, which you will need for Task 6.
+Task 4. Add a third button below Learn More
+File: App.js
+
+Insert the following code immediately after the closing Pressable tag of the Learn More button and before the closing ScrollView tag:
+<Pressable className="mt-3 items-center rounded-xl bg-red-500 py-3">
+  <Text className="font-bold text-white">
+    Delete
+  </Text>
+</Pressable>
+
+
+Explanation:
+- mt-3 adds space above the button.
+- items-center centers the label.
+- rounded-xl rounds the corners.
+- bg-red-500 creates a red background.
+- py-3 provides vertical padding.
+- font-bold text-white makes the label bold and white.
+This is a visual demonstration only. The Delete button must not actually delete anything.
+Task 5. Add Settings to the bottom navigation bar
+File: components/NavBar.js
+
+Find the closing </View> tag of the outer navigation container. Immediately before it, insert:
+<Pressable className="flex-1 items-center py-2">
+  <Text className="text-lg">⚙️</Text>
+  <Text className="text-sm text-slate-500">
+    Settings
+  </Text>
+</Pressable>
+
+
+Now there are four navigation items. Each has flex-1, so the items divide the available horizontal space equally.
+Task 6. Center the heading and paragraph
+File: App.js
+
+Add text-center to the heading:
+<Text className="text-3xl font-bold text-slate-800 text-center">
+  Hello, World!
+</Text>
+
+
+Make sure the paragraph also has text-center:
+<Text className="mt-2 text-base text-slate-600 text-center">
+  Hi! I'm [Your Name], a [Your Course] student.
+  I enjoy [Your Hobby] in my free time.
+</Text>
+
+
+text-center controls text alignment. It does not, by itself, center the entire component vertically or horizontally on the screen.
+Task 7. Make a different navigation item look selected
+File: components/NavBar.js
+
+Initially, Home is the selected item. Let's make Profile appear selected instead.
+
+Find Profile's label:
+<Text className="text-sm text-slate-500">
+  Profile
+</Text>
+
+
+Replace it with:
+<Text className="text-sm font-bold text-sky-600">
+  Profile
+</Text>
+
+
+Then remove the selected styling from Home:
+<Text className="text-sm text-slate-500">
+  Home
+</Text>
+
+
+Now Profile is bold and blue, while Home and the other items are gray.
+Check your seven tasks
+Customization checklist
+0 of 7
+
+
+
+[ ] Changed the title in TopBar.js
+[ ] Changed the top bar and primary button color
+[ ] Added my name, course, and hobby
+[ ] Added a third Delete button
+[ ] Added Settings to NavBar.js
+[ ] Centered the heading and paragraph
+[ ] Changed the selected navigation item to Profile
+
+9. Part 7 — Tailwind class cheat sheet
+These are the most important classes from the PDF. Laboratory 1 Getting Started with React Native (Expo + Tailwind) - Updated (1).pdf
+
+Class	Meaning	Example use
+flex-1	Fills available space in a flex layout	Main content area
+flex-row	Arranges children in a row	Navigation bars
+items-center	Aligns children along the cross-axis	Centering button labels
+justify-center	Centers children along the main axis	Hello World screen
+justify-between	Distributes children with space between	Top bar
+gap-2	Adds spacing between flex/grid items	Spaced layout
+p-4	Padding on all sides	Scroll content
+px-4	Horizontal padding	Top bar
+py-2	Vertical padding	Navigation items
+mt-4	Top margin	Spacing above a component
+bg-white	White background	Navigation bar
+bg-sky-600	Sky-blue background	Top bar and primary button
+text-sm	Small text	Navigation labels
+text-base	Body text size	Paragraph
+text-xl	Larger text	App title
+text-3xl	Large text	Main heading
+font-bold	Bold font weight	Heading and buttons
+text-white	White text	Filled buttons
+text-slate-600	Gray text	Paragraph
+rounded-xl	Rounded corners	Buttons
+border	Adds a border	Outlined button
+border-t	Adds a top border	Bottom navigation bar
+active:opacity-80	Reduces opacity while pressed	Optional visual feedback
+
+Three distinctions worth remembering
+1. items-center versus justify-center
+
+These operate on different axes. In a default column layout, items-center centers horizontally, while justify-center centers vertically.
+
+2. Padding versus margin
+
+Padding is inside a component's edges; margin is outside. Use padding to give a button breathing room inside its background, and margin to separate it from other elements.
+
+3. flex-1 versus flex-row
+
+flex-1 controls how a component grows in its flex layout. flex-row changes the direction in which children are arranged. They solve different problems and are often used together.
+10. Troubleshooting — How to fix common errors
+Use this section when your app refuses to start, Tailwind styles are missing, or the emulator shows an error.
+Problem	What to do
+node or npx is not recognized	Reopen the terminal. If the error remains, check your Node.js installation and PATH.
+adb is not recognized	Check ANDROID_HOME, ensure platform-tools is in your user Path, and open a new terminal.
+No Android device found	Start the emulator first, wait for the home screen, then run adb devices.
+Emulator is slow or won't start	Close heavy applications, use a lighter virtual device, and check virtualization settings.
+Tailwind classes have no effect	Check import './global.css' in App.js, the content paths in tailwind.config.js, and the NativeWind configuration files.
+Cannot find module 'nativewind/babel'	Confirm the packages installed successfully from the project root, then retry the prescribed installation steps.
+Red error mentions Reanimated or Worklets	Run npx expo install react-native-worklets, then npx expo install --fix, and restart with npx expo start -c.
+Text strings must be rendered within a <Text> component	Find any plain text placed directly inside View, Pressable, or another non-text component, and wrap it in Text.
+Property 'View' doesn't exist	Check that View is imported in the file where it is used.
+Can't find variable: Text	Import Text from react-native in the affected file.
+Element type is invalid	Check that your component is exported correctly and that the import path is correct.
+Changes do not appear	Save the file and press r in the Expo terminal. If necessary, restart with npx expo start -c.
+Web preview is blank	Check app.json for "bundler": "metro" under expo.web, then restart with a cleared cache.
+PowerShell blocks scripts	The PDF suggests using Command Prompt or asking your instructor how to configure script permissions.
+
+Laboratory 1 Getting Started with React Native (Expo + Tailwind) - Updated (1).pdf
+The three fastest debugging checks
+If your app is broken, start with these checks before changing multiple files.
+
+Check 1: Is the terminal in the right folder?
+
+Run:
+cd
+
+
+In Command Prompt, this prints the current directory. It should be your project directory, such as D:\Projects\lab1-hello-rn.
+
+Check 2: Are the configuration files in the right place?
+
+The root directory should contain:
+App.js
+global.css
+tailwind.config.js
+babel.config.js
+metro.config.js
+app.json
+package.json
+
+
+The components directory should contain TopBar.js and NavBar.js.
+
+Check 3: Did you restart Metro after changing the configuration?
+
+Run:
+npx expo start -c
+
+
+This is especially useful after editing Babel, Metro, Tailwind, or CSS configuration. It will not fix every error, but it helps eliminate stale cache as a cause.
+11. Part 8 — Questionnaire answers
+Your PDF asks nine questions in total: the initial two observation questions in Part C and the seven questions in Section 8. Below are short, student-level answers you can study and rewrite in your own words before submitting. Laboratory 1 Getting Started with React Native (Expo + Tailwind) - Updated (1).pdf
+
+Questions 1–2: Part C observations
+1. What happens if you remove the Text tag and put "Hello, World!" directly inside the View?
+
+The app shows an error because React Native requires text strings to be inside a Text component. A View is meant for layout and containers, not direct text rendering.
+
+2. What does flex: 1 do to the View?
+
+It allows the View to expand and take up the available space in its parent, which helps the content fill the screen.
+Questions 3–9: Section 8
+3. Name the React Native equivalents of the HTML tags div, p, img, and button.
+- div → View
+- p → Text
+- img → Image
+- button → Pressable or Button
+4. Why do we need a global.css file and a tailwind.config.js file in a NativeWind project?
+
+global.css provides the Tailwind stylesheet entry point, while tailwind.config.js tells Tailwind which files to scan and configures the NativeWind preset.
+
+5. Why is Pressable preferred over Button when you want custom styling?
+
+Pressable lets us style its container and text freely using className. React Native's built-in Button does not offer the same styling flexibility.
+
+6. In your layout, what is the difference between flex-row and the default direction of a View?
+
+flex-row arranges children horizontally, while a View uses a column layout by default and arranges its children vertically.
+
+7. Your buttons currently do nothing. What needs to be added to make them respond when pressed?
+
+An onPress handler needs to be added to the Pressable component. It specifies what should happen when the user presses the button.
+
+8. In a web React project you can use div without importing it. Why must View and Text be imported in React Native, and which package provides them?
+
+View and Text are React Native components rather than built-in HTML tags. We must import them from the react-native package before using them.
+
+9. Why were TopBar and NavBar placed in their own files, and which two statements make it possible to use them inside App.js?
+
+They were separated into their own files to make the code organized, reusable, and easier to maintain. export default makes each component available to other files, and import allows App.js to use them.
+12. Final code — Consolidated version of all three files
+You have now seen how each file works individually. Here are the complete versions after applying all seven customization tasks, so you can compare them against your project.
+
+For this example, the app is named Gemini Space, uses a sky-blue theme, and selects Profile in the bottom navigation. Replace the personal-description placeholders before submitting.
+File 1: components/TopBar.js
+
+import { View, Text } from 'react-native';
+
+export default function TopBar() {
+  return (
+    <View className="flex-row items-center justify-between bg-sky-600 px-4 py-4">
+      <Text className="text-xl font-bold text-white">
+        Gemini Space
+      </Text>
+
+      <Text className="text-2xl text-white">
+        ☰
+      </Text>
+    </View>
+  );
+}
+
+
+
+File 2: components/NavBar.js
+
+import { View, Text, Pressable } from 'react-native';
+
+export default function NavBar() {
+  return (
+    <View className="flex-row border-t border-slate-200 bg-white">
+      <Pressable className="flex-1 items-center py-2">
+        <Text className="text-lg">🏠</Text>
+        <Text className="text-sm text-slate-500">
+          Home
+        </Text>
+      </Pressable>
+
+      <Pressable className="flex-1 items-center py-2">
+        <Text className="text-lg">🔍</Text>
+        <Text className="text-sm text-slate-500">
+          Search
+        </Text>
+      </Pressable>
+
+      <Pressable className="flex-1 items-center py-2">
+        <Text className="text-lg">👤</Text>
+        <Text className="text-sm font-bold text-sky-600">
+          Profile
+        </Text>
+      </Pressable>
+
+      <Pressable className="flex-1 items-center py-2">
+        <Text className="text-lg">⚙️</Text>
+        <Text className="text-sm text-slate-500">
+          Settings
+        </Text>
+      </Pressable>
+    </View>
+  );
+}
+
+
+
+File 3: App.js
+
+import './global.css';
+
+import {
+  Text,
+  Pressable,
+  ScrollView,
+} from 'react-native';
+
+import {
+  SafeAreaProvider,
+  SafeAreaView,
+} from 'react-native-safe-area-context';
+
+import TopBar from './components/TopBar';
+import NavBar from './components/NavBar';
+
+export default function App() {
+  return (
+    <SafeAreaProvider>
+      <SafeAreaView className="flex-1 bg-slate-50">
+        <TopBar />
+
+        <ScrollView
+          className="flex-1"
+          contentContainerClassName="p-4"
+        >
+          <Text className="text-3xl font-bold text-slate-800 text-center">
+            Hello, World!
+          </Text>
+
+          <Text className="mt-2 text-base text-slate-600 text-center">
+            Hi! I'm [Your Name], a [Your Course] student.
+            I enjoy [Your Hobby] in my free time.
+          </Text>
+
+          <Pressable className="mt-6 items-center rounded-xl bg-sky-600 py-3">
+            <Text className="font-bold text-white">
+              Get Started
+            </Text>
+          </Pressable>
+
+          <Pressable className="mt-3 items-center rounded-xl border border-sky-600 py-3">
+            <Text className="font-bold text-sky-600">
+              Learn More
+            </Text>
+          </Pressable>
+
+          <Pressable className="mt-3 items-center rounded-xl bg-red-500 py-3">
+            <Text className="font-bold text-white">
+              Delete
+            </Text>
+          </Pressable>
+        </ScrollView>
+
+        <NavBar />
+      </SafeAreaView>
+    </SafeAreaProvider>
+  );
+}
+
+
+
+Remember, these are the three files you need to edit for the visible interface. The configuration files from Part D must remain in place.
+13. Final submission checklist
+The laboratory rubric totals 100 points. Laboratory 1 Getting Started with React Native (Expo + Tailwind) - Updated (1).pdf
+
+Before you submit
+[ ] Environment and project — 15 points
+
+Node.js, Expo, and the project work; the app opens in the emulator.
+
+[ ] NativeWind setup — 20 points
+
+The configuration files are correct and Tailwind styling works.
+
+[ ] Static mobile screen — 30 points
+
+Top bar, heading, paragraph, buttons, and bottom navigation are visible.
+
+[ ] Seven customizations — 20 points
+
+All seven tasks in Part F are complete.
+
+[ ] Component structure — 5 points
+
+TopBar.js and NavBar.js are separate files, with correct imports and exports.
+
+[ ] Questionnaire — 10 points
+
+Answers are prepared for the two observations and seven Section 8 questions.
+
+
+Rubric sections checked
+0/6
+
+
+The PDF says to submit your answers in Google Classroom using the filename format:
+Surname_ReactNativeQuestionnare
+
+
+It spells the example suffix Questionnare rather than Questionnaire. To avoid a naming issue, follow your instructor's exact requested format if they have clarified it.
+14. What you should understand before moving to the next laboratory
+If you can explain these concepts in your own words, you're learning the important parts rather than simply copying code:
+- Why React Native uses View and Text instead of HTML's div and p.
+- Why each file needs its own imports.
+- How export default and import connect your components.
+- Why App.js assembles the screen instead of containing all the navigation markup.
+- How flex-1, flex-row, items-center, and justify-between affect layout.
+- How NativeWind turns utility classes into styles for React Native.
+- Why global.css, tailwind.config.js, babel.config.js, and metro.config.js all have separate roles.
+- Why Pressable is suitable for custom-looking buttons.
+- Why the buttons don't perform actions yet and how onPress will be introduced in the next laboratory.
+My recommendation: Work through the lab in order, running the app after Parts C, D, and E. That way, if something breaks, you'll know which stage introduced the problem instead of having to debug the entire project at once.
