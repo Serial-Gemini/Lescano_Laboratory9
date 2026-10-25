@@ -1,4 +1,5 @@
 /* Make all code text glow */
+/* me like glowy */
 .monaco-editor .view-lines .mtk1,
 .monaco-editor .view-lines span {
     text-shadow: 0 0 2px #3b1443, 0 0 8px #7ef0ff, 0 0 2px #ff7edb;
