@@ -19,7 +19,12 @@ export default function NavBar() {
 
             <Pressable className="flex-1 items-center py-2">
                 <Text className="text-lg">👤</Text>
-                <Text className="text-sm text-slate-500">Profile</Text>
+                <Text className="text-sm font-bold text-slate-500">Profile</Text>
+            </Pressable>
+
+            <Pressable className="flex-1 items-center py-2">
+                <Text className="text-lg">⚙️</Text>
+                <Text className="text-sm text-slate-500">Settings</Text>
             </Pressable>
         </View>
 

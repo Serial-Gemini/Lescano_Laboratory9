@@ -4,9 +4,9 @@ export default function TopBar() {
 
     return (
 
-        <View className="flex-row items-center justify-center bg-indigo-600 px-4 py-4">
+        <View className="flex-row items-center justify-center bg-sky-600 px-4 py-4">
             <Text className="text-xl font-bold text-white flex-1">
-                Gemini Space
+                Gemini Tech
             </Text>
 
             <Text className="text-2xl text-white">

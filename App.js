@@ -36,13 +36,16 @@ export default function App() {
 
         <ScrollView className="flex-1" contentContainerClassName="p-4">
 
-          <Text className="text-3xl font-bold text-slate-800">
-            Hello World!
+          <Text className="text-1xl font-bold text-slate-800 text-center">
+            Hello Everyone, my name is Waylon Chester M. Lescano and I am a CVSU student taking up Bachelor of Science in Information Technology. 
+            I am currently in my 3rd year and I am excited to learn more about React Native and its capabilities. 
+            I hope to gain valuable skills and knowledge that will help me in my future career as a software developer.
+            My hobby is playing video games and I also enjoy watching movies and TV shows.
           </Text>
 
-          <Text className="mt-2 text-base text-slate-600">
-            Welcome to React Native! Hi.
-          </Text>
+          {/* <Text className="mt-2 text-base text-slate-600">
+            Hello
+          </Text> */}
 
           <Pressable className="mt-6 items-center rounded-xl bg-indigo-600 py-3">
             <Text className="font-bold text-white">
@@ -54,6 +57,10 @@ export default function App() {
             <Text className="font-bold text-indigo-600">
               Learn More
             </Text>
+          </Pressable>
+
+          <Pressable className="mt-3 items-center rounded-xl bg-red-500 py-3">
+            <Text className="font-bold text-white">Delete</Text>
           </Pressable>
         </ScrollView>
 
